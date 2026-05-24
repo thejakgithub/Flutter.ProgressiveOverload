@@ -4,6 +4,19 @@ Progressive Overload Tracker
 
 A new Flutter project.
 
+## Project Overview
+
+Flutter.ProgressiveOverload is a workout planning and tracking app focused on progressive overload.
+It helps users set up their training profile, choose available equipment, build weekly workout plans,
+and manage exercises with sets/reps in a structured flow.
+
+Core goals of the project:
+
+- Help users train consistently with a clear weekly schedule
+- Support exercise selection based on workout template and available equipment
+- Track progression over time to improve strength and performance
+- Provide a clean, scalable Flutter codebase using feature-first architecture
+
 ## Push Notifications Setup
 
 This project supports:

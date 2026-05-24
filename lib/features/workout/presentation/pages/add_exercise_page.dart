@@ -19,20 +19,20 @@ class _AddExercisePageState extends State<AddExercisePage> {
   String? _exerciseName;
   final List<List<String>> _sets = [];
 
-  void _addExercise() {
+  Future<void> _addExercise() async {
     FocusManager.instance.primaryFocus?.unfocus();
-    showModalBottomSheet<String>(
+    final picked = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: AppColors.surface,
       builder: (_) => _ExercisePickerSheet(templateName: widget.templateName),
-    ).then((picked) {
-      if (picked == null || !mounted) return;
-      setState(() {
-        _exerciseName = picked;
-        if (_sets.isEmpty) _sets.add(['1', '-', '-']);
-      });
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (picked == null || !mounted) return;
+    setState(() {
+      _exerciseName = picked;
+      if (_sets.isEmpty) _sets.add(['1', '-', '-']);
     });
   }
 
@@ -44,85 +44,89 @@ class _AddExercisePageState extends State<AddExercisePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        title: const Text('Add Exercise'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: const Color(0xFF121415),
-              ),
-              onPressed: () => context.pop(),
-              child: const Text('Save'),
-            ),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => context.pop(),
           ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          Text(
-            widget.day?.toUpperCase() ?? 'DAY',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(color: AppColors.textMuted),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            widget.templateName ?? 'Workout',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineMedium?.copyWith(fontStyle: FontStyle.italic),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 4),
-            width: 78,
-            height: 4,
-            color: AppColors.primary,
-          ),
-          const SizedBox(height: 24),
-          if (_exerciseName == null)
-            Text(
-              'No exercise added yet',
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(color: AppColors.textMuted),
-            )
-          else ...[
-            _ExerciseEditorHeader(
-              name: _exerciseName!,
-              timer: 'Rest Timer: OFF',
-            ),
-            const SizedBox(height: 12),
-            _SetTable(rows: _sets),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(54),
-                side: BorderSide(
-                  color: AppColors.outline.withValues(alpha: 0.5),
+          title: const Text('Add Exercise'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: const Color(0xFF121415),
                 ),
-                foregroundColor: AppColors.text,
+                onPressed: () => context.pop(),
+                child: const Text('Save'),
               ),
-              onPressed: _addSet,
-              icon: const Icon(Icons.add),
-              label: const Text('Add Set'),
             ),
           ],
-          const SizedBox(height: 10),
-          NeonPrimaryButton(
-            label: 'Add exercise',
-            icon: Icons.add,
-            onPressed: _addExercise,
-          ),
-        ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            Text(
+              widget.day?.toUpperCase() ?? 'DAY',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: AppColors.textMuted),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              widget.templateName ?? 'Workout',
+              style: Theme.of(
+                context,
+              ).textTheme.headlineMedium?.copyWith(fontStyle: FontStyle.italic),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 4),
+              width: 78,
+              height: 4,
+              color: AppColors.primary,
+            ),
+            const SizedBox(height: 24),
+            if (_exerciseName == null)
+              Text(
+                'No exercise added yet',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyLarge?.copyWith(color: AppColors.textMuted),
+              )
+            else ...[
+              _ExerciseEditorHeader(
+                name: _exerciseName!,
+                timer: 'Rest Timer: OFF',
+              ),
+              const SizedBox(height: 12),
+              _SetTable(rows: _sets),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(54),
+                  side: BorderSide(
+                    color: AppColors.outline.withValues(alpha: 0.5),
+                  ),
+                  foregroundColor: AppColors.text,
+                ),
+                onPressed: _addSet,
+                icon: const Icon(Icons.add),
+                label: const Text('Add Set'),
+              ),
+            ],
+            const SizedBox(height: 10),
+            NeonPrimaryButton(
+              label: 'Add exercise',
+              icon: Icons.add,
+              onPressed: _addExercise,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -434,6 +438,74 @@ const _kHomeEquipmentNames = {
   'Resistance Bands',
 };
 
+const _kPushTemplateMuscles = <_MuscleGroup>{
+  _MuscleGroup.abdominals,
+  _MuscleGroup.biceps,
+  _MuscleGroup.cardio,
+  _MuscleGroup.chest,
+  _MuscleGroup.forearms,
+  _MuscleGroup.fullBody,
+  _MuscleGroup.neck,
+  _MuscleGroup.shoulders,
+  _MuscleGroup.traps,
+  _MuscleGroup.triceps,
+};
+
+const _kPullTemplateMuscles = <_MuscleGroup>{
+  _MuscleGroup.abdominals,
+  _MuscleGroup.biceps,
+  _MuscleGroup.cardio,
+  _MuscleGroup.forearms,
+  _MuscleGroup.fullBody,
+  _MuscleGroup.lats,
+  _MuscleGroup.lowerBack,
+  _MuscleGroup.neck,
+  _MuscleGroup.shoulders,
+  _MuscleGroup.traps,
+  _MuscleGroup.triceps,
+  _MuscleGroup.upperBack,
+};
+
+const _kLegTemplateMuscles = <_MuscleGroup>{
+  _MuscleGroup.abdominals,
+  _MuscleGroup.abductors,
+  _MuscleGroup.adductors,
+  _MuscleGroup.calves,
+  _MuscleGroup.cardio,
+  _MuscleGroup.fullBody,
+  _MuscleGroup.glutes,
+  _MuscleGroup.hamstrings,
+  _MuscleGroup.quadriceps,
+};
+
+const _kUpperTemplateMuscles = <_MuscleGroup>{
+  _MuscleGroup.abdominals,
+  _MuscleGroup.biceps,
+  _MuscleGroup.cardio,
+  _MuscleGroup.chest,
+  _MuscleGroup.forearms,
+  _MuscleGroup.fullBody,
+  _MuscleGroup.lats,
+  _MuscleGroup.lowerBack,
+  _MuscleGroup.neck,
+  _MuscleGroup.shoulders,
+  _MuscleGroup.traps,
+  _MuscleGroup.triceps,
+  _MuscleGroup.upperBack,
+};
+
+const _kLowerTemplateMuscles = <_MuscleGroup>{
+  _MuscleGroup.abdominals,
+  _MuscleGroup.abductors,
+  _MuscleGroup.adductors,
+  _MuscleGroup.calves,
+  _MuscleGroup.cardio,
+  _MuscleGroup.fullBody,
+  _MuscleGroup.glutes,
+  _MuscleGroup.hamstrings,
+  _MuscleGroup.lowerBack,
+};
+
 Set<_EquipmentCategory> _categoriesFromEquipment(
   List<String> list,
   bool hasBodyweight,
@@ -441,8 +513,9 @@ Set<_EquipmentCategory> _categoriesFromEquipment(
   final result = <_EquipmentCategory>{};
   for (final item in list) {
     if (_kGymEquipmentNames.contains(item)) result.add(_EquipmentCategory.gym);
-    if (_kHomeEquipmentNames.contains(item))
+    if (_kHomeEquipmentNames.contains(item)) {
       result.add(_EquipmentCategory.home);
+    }
   }
   if (hasBodyweight) result.add(_EquipmentCategory.bodyweight);
   // If nothing matched, fall back to showing everything
@@ -459,79 +532,11 @@ Set<_EquipmentCategory> _categoriesFromEquipment(
 Set<_MuscleGroup>? _musclesForTemplate(String? template) {
   if (template == null) return null;
   final t = template.toLowerCase();
-  if (t.contains('push')) {
-    return {
-      _MuscleGroup.abdominals,
-      _MuscleGroup.biceps,
-      _MuscleGroup.cardio,
-      _MuscleGroup.chest,
-      _MuscleGroup.forearms,
-      _MuscleGroup.fullBody,
-      _MuscleGroup.neck,
-      _MuscleGroup.shoulders,
-      _MuscleGroup.traps,
-      _MuscleGroup.triceps,
-    };
-  }
-  if (t.contains('pull')) {
-    return {
-      _MuscleGroup.abdominals,
-      _MuscleGroup.biceps,
-      _MuscleGroup.cardio,
-      _MuscleGroup.forearms,
-      _MuscleGroup.fullBody,
-      _MuscleGroup.lats,
-      _MuscleGroup.lowerBack,
-      _MuscleGroup.neck,
-      _MuscleGroup.shoulders,
-      _MuscleGroup.traps,
-      _MuscleGroup.triceps,
-      _MuscleGroup.upperBack,
-    };
-  }
-  if (t.contains('leg')) {
-    return {
-      _MuscleGroup.abdominals,
-      _MuscleGroup.abductors,
-      _MuscleGroup.adductors,
-      _MuscleGroup.calves,
-      _MuscleGroup.cardio,
-      _MuscleGroup.fullBody,
-      _MuscleGroup.glutes,
-      _MuscleGroup.hamstrings,
-      _MuscleGroup.quadriceps,
-    };
-  }
-  if (t.contains('upper')) {
-    return {
-      _MuscleGroup.abdominals,
-      _MuscleGroup.biceps,
-      _MuscleGroup.cardio,
-      _MuscleGroup.chest,
-      _MuscleGroup.forearms,
-      _MuscleGroup.fullBody,
-      _MuscleGroup.lats,
-      _MuscleGroup.lowerBack,
-      _MuscleGroup.neck,
-      _MuscleGroup.shoulders,
-      _MuscleGroup.traps,
-      _MuscleGroup.triceps,
-      _MuscleGroup.upperBack,
-    };
-  }
-  if (t.contains('lower')) {
-    return {
-      _MuscleGroup.abdominals,
-      _MuscleGroup.abductors,
-      _MuscleGroup.adductors,
-      _MuscleGroup.calves,
-      _MuscleGroup.cardio,
-      _MuscleGroup.fullBody,
-      _MuscleGroup.glutes,
-      _MuscleGroup.hamstrings,
-      _MuscleGroup.lowerBack,
-    };
-  }
+  if (t.contains('push')) return _kPushTemplateMuscles;
+  if (t.contains('pull')) return _kPullTemplateMuscles;
+  if (t.contains('leg')) return _kLegTemplateMuscles;
+  if (t.contains('upper')) return _kUpperTemplateMuscles;
+  if (t.contains('lower')) return _kLowerTemplateMuscles;
   // Full Body or anything else → show all
   return null;
 }
@@ -590,11 +595,12 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
 
   List<_Exercise> get _filtered {
     final allowedMuscles = _musclesForTemplate(widget.templateName);
+    final normalizedQuery = _query.trim().toLowerCase();
     return _kPopularExercises.where((e) {
       final matchesQuery =
-          _query.isEmpty ||
-          e.name.toLowerCase().contains(_query.toLowerCase()) ||
-          e.muscle.toLowerCase().contains(_query.toLowerCase());
+          normalizedQuery.isEmpty ||
+          e.name.toLowerCase().contains(normalizedQuery) ||
+          e.muscle.toLowerCase().contains(normalizedQuery);
       // When a specific filter is chosen use it; otherwise restrict to the
       // user's own equipment categories (if loaded).
       final matchesEquipment = _equipmentFilter != null
@@ -619,8 +625,9 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
     };
   }
 
-  void _openEquipmentFilter() {
-    showModalBottomSheet<Object>(
+  Future<void> _openEquipmentFilter() async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    final result = await showModalBottomSheet<Object>(
       context: context,
       backgroundColor: AppColors.surfaceContainer,
       shape: const RoundedRectangleBorder(
@@ -630,21 +637,22 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
         current: _equipmentFilter,
         allowed: _allowedCategories,
       ),
-    ).then((result) {
-      if (result == null || !mounted) return; // dismissed — no change
-      setState(() {
-        _equipmentFilter = result == _kClearFilter
-            ? null
-            : result as _EquipmentCategory;
-      });
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (result == null || !mounted) return; // dismissed — no change
+    setState(() {
+      _equipmentFilter = result == _kClearFilter
+          ? null
+          : result as _EquipmentCategory;
     });
   }
 
   String get _muscleLabel => _muscleFilter?.label ?? 'All Muscles';
 
-  void _openMuscleFilter() {
+  Future<void> _openMuscleFilter() async {
     final allowed = _musclesForTemplate(widget.templateName);
-    showModalBottomSheet<Object>(
+    FocusManager.instance.primaryFocus?.unfocus();
+    final result = await showModalBottomSheet<Object>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -654,16 +662,17 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
       ),
       builder: (_) =>
           _MuscleFilterSheet(current: _muscleFilter, allowed: allowed),
-    ).then((result) {
-      if (result == null || !mounted) return;
-      setState(() {
-        _muscleFilter = result == _kClearFilter ? null : result as _MuscleGroup;
-      });
+    );
+    FocusManager.instance.primaryFocus?.unfocus();
+    if (result == null || !mounted) return;
+    setState(() {
+      _muscleFilter = result == _kClearFilter ? null : result as _MuscleGroup;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final filtered = _filtered;
     return Column(
       children: [
         // ── Top bar ──────────────────────────────────────────────────────────
@@ -761,14 +770,14 @@ class _ExercisePickerSheetState extends State<_ExercisePickerSheet> {
                 ),
               ),
               SliverList.separated(
-                itemCount: _filtered.length,
+                itemCount: filtered.length,
                 separatorBuilder: (context, index) => Divider(
                   height: 1,
                   indent: 72,
                   color: AppColors.outline.withValues(alpha: 0.25),
                 ),
                 itemBuilder: (context, i) {
-                  final ex = _filtered[i];
+                  final ex = filtered[i];
                   return _ExerciseRow(
                     name: ex.name,
                     muscle: ex.muscle,

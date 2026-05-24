@@ -10,161 +10,150 @@ class DailyWorkoutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Icon(Icons.bolt, color: AppColors.primary),
-            Text(
-              'Progressive Overload',
-              style: TextStyle(color: AppColors.primary),
-            ),
-            Icon(Icons.settings, color: AppColors.primary),
-          ],
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: const [
+              Icon(Icons.bolt, color: AppColors.primary),
+              Text(
+                'Progressive Overload',
+                style: TextStyle(color: AppColors.primary),
+              ),
+              Icon(Icons.settings, color: AppColors.primary),
+            ],
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            SizedBox(
-              height: 86,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: const [
-                  _DayChip('MON', '12'),
-                  _DayChip('TUE', '13'),
-                  _DayChip('WED', '14', active: true),
-                  _DayChip('THU', '15'),
-                  _DayChip('FRI', '16'),
-                  _DayChip('SAT', '17'),
-                  _DayChip('SUN', '18'),
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              SizedBox(
+                height: 86,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: const [
+                    _DayChip('MON', '12'),
+                    _DayChip('TUE', '13'),
+                    _DayChip('WED', '14', active: true),
+                    _DayChip('THU', '15'),
+                    _DayChip('FRI', '16'),
+                    _DayChip('SAT', '17'),
+                    _DayChip('SUN', '18'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                'TODAY\'S WORKOUT',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(color: AppColors.primary),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'PUSH DAY',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
+                  const _DurationBadge(),
                 ],
               ),
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'TODAY\'S WORKOUT',
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(color: AppColors.primary),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    'PUSH DAY',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
+              const SizedBox(height: 12),
+              const NeonPrimaryButton(
+                label: 'START WORKOUT',
+                icon: Icons.play_arrow,
+              ),
+              const SizedBox(height: 16),
+              const _ExerciseCard(
+                name: 'Barbell Bench Press',
+                sets: '4 Sets • 8-10 Reps',
+                target: '225 lbs',
+              ),
+              const SizedBox(height: 12),
+              const _ExerciseCard(
+                name: 'Overhead Dumbbell Press',
+                sets: '3 Sets • 10-12 Reps',
+                target: '60 lbs',
+              ),
+              const SizedBox(height: 12),
+              const _ExerciseCard(
+                name: 'Tricep Rope Pushdown',
+                sets: '4 Sets • 12-15 Reps',
+                target: '45 lbs',
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.primary, width: 2),
+                  minimumSize: const Size.fromHeight(56),
+                  foregroundColor: AppColors.primary,
                 ),
-                _durationBadge(),
-              ],
-            ),
-            const SizedBox(height: 12),
-            const NeonPrimaryButton(
-              label: 'START WORKOUT',
-              icon: Icons.play_arrow,
-            ),
-            const SizedBox(height: 16),
-            const _ExerciseCard(
-              name: 'Barbell Bench Press',
-              sets: '4 Sets • 8-10 Reps',
-              target: '225 lbs',
-            ),
-            const SizedBox(height: 12),
-            const _ExerciseCard(
-              name: 'Overhead Dumbbell Press',
-              sets: '3 Sets • 10-12 Reps',
-              target: '60 lbs',
-            ),
-            const SizedBox(height: 12),
-            const _ExerciseCard(
-              name: 'Tricep Rope Pushdown',
-              sets: '4 Sets • 12-15 Reps',
-              target: '45 lbs',
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.primary, width: 2),
-                minimumSize: const Size.fromHeight(56),
-                foregroundColor: AppColors.primary,
+                onPressed: () {},
+                icon: const Icon(Icons.add),
+                label: const Text('Add Exercise'),
               ),
-              onPressed: () {},
-              icon: const Icon(Icons.add),
-              label: const Text('Add Exercise'),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.textMuted),
-                minimumSize: const Size.fromHeight(56),
-                foregroundColor: AppColors.text,
-              ),
-              onPressed: () async {
-                await LocalNotificationService.showWorkoutReminderNow();
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Notification sent.')),
-                );
-              },
-              icon: const Icon(Icons.notifications_active_outlined),
-              label: const Text('Test Notification'),
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.textMuted),
-                minimumSize: const Size.fromHeight(56),
-                foregroundColor: AppColors.text,
-              ),
-              onPressed: () async {
-                try {
-                  await PushNotificationService.syncCurrentDeviceToken();
-                  if (!context.mounted) {
-                    return;
-                  }
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.textMuted),
+                  minimumSize: const Size.fromHeight(56),
+                  foregroundColor: AppColors.text,
+                ),
+                onPressed: () async {
+                  await LocalNotificationService.showWorkoutReminderNow();
+                  if (!context.mounted) return;
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Push token synced to Supabase.'),
-                    ),
+                    const SnackBar(content: Text('Notification sent.')),
                   );
-                } catch (error) {
-                  if (!context.mounted) {
-                    return;
+                },
+                icon: const Icon(Icons.notifications_active_outlined),
+                label: const Text('Test Notification'),
+              ),
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  side: const BorderSide(color: AppColors.textMuted),
+                  minimumSize: const Size.fromHeight(56),
+                  foregroundColor: AppColors.text,
+                ),
+                onPressed: () async {
+                  try {
+                    await PushNotificationService.syncCurrentDeviceToken();
+                    if (!context.mounted) {
+                      return;
+                    }
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Push token synced to Supabase.'),
+                      ),
+                    );
+                  } catch (error) {
+                    if (!context.mounted) {
+                      return;
+                    }
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(error.toString())));
                   }
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(error.toString())));
-                }
-              },
-              icon: const Icon(Icons.cloud_upload_outlined),
-              label: const Text('Sync Push Token'),
-            ),
-            const SizedBox(height: 20),
-          ],
+                },
+                icon: const Icon(Icons.cloud_upload_outlined),
+                label: const Text('Sync Push Token'),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _durationBadge() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainer,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: const Row(
-        children: [
-          Icon(Icons.schedule, size: 16),
-          SizedBox(width: 4),
-          Text('65 min'),
-        ],
-      ),
-    );
-  }
+  // _durationBadge removed — see _DurationBadge widget below
 }
 
 class _ExerciseCard extends StatelessWidget {
@@ -304,6 +293,28 @@ class _DayChip extends StatelessWidget {
               color: active ? const Color(0xFF121415) : AppColors.text,
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DurationBadge extends StatelessWidget {
+  const _DurationBadge();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: const Row(
+        children: [
+          Icon(Icons.schedule, size: 16),
+          SizedBox(width: 4),
+          Text('65 min'),
         ],
       ),
     );

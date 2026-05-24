@@ -81,7 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                   child: Column(
                     children: [
-                      const _LogoBlock(),
+                      const AppLogoBlock(),
                       const SizedBox(height: 20),
                       Text(
                         'JOIN THE ELITE',
@@ -117,25 +117,27 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _label('FULL NAME'),
+                              const _FormFieldLabel('FULL NAME'),
                               const SizedBox(height: 8),
-                              _input(
+                              _AuthTextField(
                                 controller: _nameController,
                                 hint: 'John Doe',
                                 icon: Icons.person_outline,
+                                fillColor: AppColors.surface,
                                 validator: (value) =>
                                     (value ?? '').trim().isEmpty
                                     ? 'Enter your full name.'
                                     : null,
                               ),
                               const SizedBox(height: 14),
-                              _label('EMAIL ADDRESS'),
+                              const _FormFieldLabel('EMAIL ADDRESS'),
                               const SizedBox(height: 8),
-                              _input(
+                              _AuthTextField(
                                 controller: _emailController,
                                 hint: 'athlete@progressive.com',
                                 icon: Icons.mail_outline,
                                 keyboardType: TextInputType.emailAddress,
+                                fillColor: AppColors.surface,
                                 validator: (value) {
                                   final text = value?.trim() ?? '';
                                   if (text.isEmpty || !text.contains('@')) {
@@ -145,13 +147,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 },
                               ),
                               const SizedBox(height: 14),
-                              _label('PASSWORD'),
+                              const _FormFieldLabel('PASSWORD'),
                               const SizedBox(height: 8),
-                              _input(
+                              _AuthTextField(
                                 controller: _passwordController,
                                 hint: '••••••••',
                                 icon: Icons.lock_outline,
                                 obscureText: _obscurePassword,
+                                fillColor: AppColors.surface,
                                 onToggleObscure: () {
                                   setState(() {
                                     _obscurePassword = !_obscurePassword;
@@ -165,13 +168,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 },
                               ),
                               const SizedBox(height: 14),
-                              _label('CONFIRM PASSWORD'),
+                              const _FormFieldLabel('CONFIRM PASSWORD'),
                               const SizedBox(height: 8),
-                              _input(
+                              _AuthTextField(
                                 controller: _confirmController,
                                 hint: '••••••••',
                                 icon: Icons.lock_outline,
                                 obscureText: _obscureConfirmPassword,
+                                fillColor: AppColors.surface,
                                 onToggleObscure: () {
                                   setState(() {
                                     _obscureConfirmPassword =
@@ -237,23 +241,25 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
             ),
-            if (_submitting) _loadingOverlay(),
+            if (_submitting) const AppLoadingOverlay(),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _loadingOverlay() {
-    return ColoredBox(
-      color: Colors.black.withValues(alpha: 0.5),
-      child: const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      ),
-    );
-  }
+// ---------------------------------------------------------------------------
+// Page-local reusable widgets
+// ---------------------------------------------------------------------------
 
-  Widget _label(String text) {
+class _FormFieldLabel extends StatelessWidget {
+  const _FormFieldLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
     return Text(
       text,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -262,26 +268,41 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
+}
 
-  Widget _input({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    TextInputType? keyboardType,
-    bool obscureText = false,
-    VoidCallback? onToggleObscure,
-    String? Function(String?)? validator,
-  }) {
+class _AuthTextField extends StatelessWidget {
+  const _AuthTextField({
+    required this.controller,
+    required this.hint,
+    required this.icon,
+    this.keyboardType,
+    this.validator,
+    this.obscureText = false,
+    this.onToggleObscure,
+    this.fillColor = AppColors.surfaceContainer,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final IconData icon;
+  final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
+  final bool obscureText;
+  final VoidCallback? onToggleObscure;
+  final Color fillColor;
+
+  @override
+  Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      obscureText: obscureText,
       validator: validator,
+      obscureText: obscureText,
       onTapOutside: (_) => FocusScope.of(context).unfocus(),
       style: Theme.of(context).textTheme.bodyLarge,
       decoration: InputDecoration(
         filled: true,
-        fillColor: AppColors.surface,
+        fillColor: fillColor,
         hintText: hint,
         hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
           color: AppColors.textMuted.withValues(alpha: 0.6),
@@ -302,42 +323,11 @@ class _SignUpPageState extends State<SignUpPage> {
                   color: AppColors.textMuted,
                 ),
               ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide.none,
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.outline),
         ),
-      ),
-    );
-  }
-}
-
-class _LogoBlock extends StatelessWidget {
-  const _LogoBlock();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 116,
-      height: 116,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.2),
-            blurRadius: 22,
-          ),
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.85)),
-        ),
-        child: const Center(
-          child: Icon(Icons.bolt, color: AppColors.primary, size: 52),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
     );

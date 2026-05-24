@@ -118,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                   child: Column(
                     children: [
-                      const _LogoBlock(),
+                      const AppLogoBlock(),
                       const SizedBox(height: 20),
                       Text(
                         'READY TO\nTRAIN?',
@@ -154,9 +154,9 @@ class _LoginPageState extends State<LoginPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _label('EMAIL ADDRESS'),
+                              const _FormFieldLabel('EMAIL ADDRESS'),
                               const SizedBox(height: 8),
-                              _input(
+                              _AuthTextField(
                                 controller: _emailController,
                                 hint: 'athlete@example.com',
                                 icon: Icons.mail_outline,
@@ -172,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                               const SizedBox(height: 16),
                               Row(
                                 children: [
-                                  _label('PASSWORD'),
+                                  const _FormFieldLabel('PASSWORD'),
                                   const Spacer(),
                                   TextButton(
                                     onPressed: _onForgotPassword,
@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                 ],
                               ),
-                              _input(
+                              _AuthTextField(
                                 controller: _passwordController,
                                 hint: '••••••••',
                                 icon: Icons.lock_outline,
@@ -238,8 +238,8 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                       const SizedBox(height: 14),
-                      _socialButton(
-                        'Continue with Google',
+                      _SocialButton(
+                        label: 'Continue with Google',
                         dark: true,
                         onPressed: _onGoogleSignIn,
                       ),
@@ -283,23 +283,25 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            if (_submitting || _googleSigningIn) _loadingOverlay(),
+            if (_submitting || _googleSigningIn) const AppLoadingOverlay(),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _loadingOverlay() {
-    return ColoredBox(
-      color: Colors.black.withValues(alpha: 0.5),
-      child: const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      ),
-    );
-  }
+// ---------------------------------------------------------------------------
+// Page-local reusable widgets
+// ---------------------------------------------------------------------------
 
-  Widget _label(String text) {
+class _FormFieldLabel extends StatelessWidget {
+  const _FormFieldLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
     return Text(
       text,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -308,16 +310,29 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
 
-  Widget _input({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    TextInputType? keyboardType,
-    String? Function(String?)? validator,
-    bool obscureText = false,
-    VoidCallback? onToggleObscure,
-  }) {
+class _AuthTextField extends StatelessWidget {
+  const _AuthTextField({
+    required this.controller,
+    required this.hint,
+    required this.icon,
+    this.keyboardType,
+    this.validator,
+    this.obscureText = false,
+    this.onToggleObscure,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final IconData icon;
+  final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
+  final bool obscureText;
+  final VoidCallback? onToggleObscure;
+
+  @override
+  Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
@@ -357,12 +372,21 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
 
-  Widget _socialButton(
-    String label, {
-    required bool dark,
-    required VoidCallback onPressed,
-  }) {
+class _SocialButton extends StatelessWidget {
+  const _SocialButton({
+    required this.label,
+    required this.dark,
+    required this.onPressed,
+  });
+
+  final String label;
+  final bool dark;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
         minimumSize: const Size.fromHeight(56),
@@ -374,39 +398,6 @@ class _LoginPageState extends State<LoginPage> {
       child: Text(
         label,
         style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
-      ),
-    );
-  }
-}
-
-class _LogoBlock extends StatelessWidget {
-  const _LogoBlock();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 112,
-      height: 112,
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.2),
-            blurRadius: 22,
-          ),
-        ],
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.85)),
-        ),
-        child: const Center(
-          child: Icon(Icons.bolt, color: AppColors.primary, size: 52),
-        ),
       ),
     );
   }

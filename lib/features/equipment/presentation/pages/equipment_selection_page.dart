@@ -232,7 +232,7 @@ class _EquipmentSelectionPageState extends State<EquipmentSelectionPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _stepHeader(step: 2),
+                      const OnboardingStepHeader(step: 2),
                       const SizedBox(height: 18),
                       Text(
                         'What equipment do you have?',
@@ -285,40 +285,9 @@ class _EquipmentSelectionPageState extends State<EquipmentSelectionPage> {
                 ),
               ),
             ),
-            if (_isSaving) _savingOverlay(),
+            if (_isSaving) const AppLoadingOverlay(),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _savingOverlay() {
-    return ColoredBox(
-      color: Colors.black.withValues(alpha: 0.35),
-      child: const Center(child: CircularProgressIndicator()),
-    );
-  }
-
-  Widget _stepHeader({required int step}) {
-    return Row(
-      children: [
-        Text('Step $step of 3', style: Theme.of(context).textTheme.titleMedium),
-        const Spacer(),
-        _progress(active: step >= 1),
-        _progress(active: step >= 2),
-        _progress(active: step >= 3),
-      ],
-    );
-  }
-
-  Widget _progress({bool active = false}) {
-    return Container(
-      margin: const EdgeInsets.only(left: 6),
-      width: 34,
-      height: 4,
-      decoration: BoxDecoration(
-        color: active ? AppColors.primary : AppColors.surfaceHighest,
-        borderRadius: BorderRadius.circular(999),
       ),
     );
   }

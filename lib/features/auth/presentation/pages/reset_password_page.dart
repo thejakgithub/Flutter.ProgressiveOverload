@@ -148,9 +148,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _label('NEW PASSWORD'),
+                          const _FormFieldLabel('NEW PASSWORD'),
                           const SizedBox(height: 8),
-                          _input(
+                          _AuthTextField(
                             controller: _passwordController,
                             hint: '••••••••',
                             icon: Icons.lock_outline,
@@ -168,9 +168,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                             },
                           ),
                           const SizedBox(height: 14),
-                          _label('CONFIRM PASSWORD'),
+                          const _FormFieldLabel('CONFIRM PASSWORD'),
                           const SizedBox(height: 8),
-                          _input(
+                          _AuthTextField(
                             controller: _confirmController,
                             hint: '••••••••',
                             icon: Icons.lock_outline,
@@ -220,8 +220,19 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       ),
     );
   }
+}
 
-  Widget _label(String text) {
+// ---------------------------------------------------------------------------
+// Page-local reusable widgets
+// ---------------------------------------------------------------------------
+
+class _FormFieldLabel extends StatelessWidget {
+  const _FormFieldLabel(this.text);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
     return Text(
       text,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -230,15 +241,27 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
       ),
     );
   }
+}
 
-  Widget _input({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    String? Function(String?)? validator,
-    bool obscureText = false,
-    VoidCallback? onToggleObscure,
-  }) {
+class _AuthTextField extends StatelessWidget {
+  const _AuthTextField({
+    required this.controller,
+    required this.hint,
+    required this.icon,
+    this.validator,
+    this.obscureText = false,
+    this.onToggleObscure,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final IconData icon;
+  final String? Function(String?)? validator;
+  final bool obscureText;
+  final VoidCallback? onToggleObscure;
+
+  @override
+  Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
       validator: validator,

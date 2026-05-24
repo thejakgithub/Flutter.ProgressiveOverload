@@ -44,156 +44,138 @@ class _ProfileDashboardPageState extends State<ProfileDashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                color: AppColors.surfaceContainer,
-                border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.4),
-                ),
-              ),
-              child: const Icon(Icons.bolt, color: AppColors.primary, size: 18),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              'PROGRESSIVE\nOVERLOAD',
-              style: Theme.of(
-                context,
-              ).textTheme.headlineMedium?.copyWith(color: AppColors.primary),
-            ),
-          ],
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primary, width: 3),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.25),
-                          blurRadius: 14,
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(title: const AppHeaderLogo(), centerTitle: true),
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
+            children: [
+              Center(
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.primary, width: 3),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.25),
+                            blurRadius: 14,
+                          ),
+                        ],
+                      ),
+                      child: const CircleAvatar(
+                        radius: 56,
+                        backgroundColor: AppColors.surfaceContainer,
+                        child: Icon(
+                          Icons.person,
+                          size: 64,
+                          color: Colors.white54,
                         ),
-                      ],
-                    ),
-                    child: const CircleAvatar(
-                      radius: 56,
-                      backgroundColor: AppColors.surfaceContainer,
-                      child: Icon(
-                        Icons.person,
-                        size: 64,
-                        color: Colors.white54,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'John Doe',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 10,
+                    const SizedBox(height: 12),
+                    Text(
+                      'John Doe',
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(999),
-                      color: AppColors.primary.withValues(alpha: 0.1),
-                      border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.45),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(999),
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.45),
+                        ),
+                      ),
+                      child: Text(
+                        'ELITE MEMBER',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: AppColors.primary,
+                              letterSpacing: 3,
+                            ),
                       ),
                     ),
-                    child: Text(
-                      'ELITE MEMBER',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.primary,
-                        letterSpacing: 3,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            KineticCard(
-              child: Row(
-                children: const [
-                  _Metric(label: 'HEIGHT', value: '180', unit: 'cm'),
-                  _Metric(label: 'WEIGHT', value: '82', unit: 'kg'),
-                  _Metric(label: 'AGE', value: '28', unit: 'yrs'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-            const Row(
-              children: [
-                Expanded(
-                  child: _StatsTile(
-                    icon: Icons.local_fire_department,
-                    title: 'ENERGY\nEXPENDITURE',
-                    value: '2,850 kcal/day',
-                  ),
+                  ],
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: _StatsTile(
-                    icon: Icons.fitness_center,
-                    title: 'TRAINING PLAN',
-                    value: 'Hypertrophy Block\nWk 4 of 8 • 4 days/wk',
-                  ),
+              ),
+              const SizedBox(height: 18),
+              KineticCard(
+                child: Row(
+                  children: const [
+                    _Metric(label: 'HEIGHT', value: '180', unit: 'cm'),
+                    _Metric(label: 'WEIGHT', value: '82', unit: 'kg'),
+                    _Metric(label: 'AGE', value: '28', unit: 'yrs'),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            KineticCard(
-              child: Column(
+              ),
+              const SizedBox(height: 12),
+              const Row(
                 children: [
-                  const _ListRow(icon: Icons.history, label: 'Workout History'),
-                  const Divider(color: AppColors.outline),
-                  const _ListRow(
-                    icon: Icons.emoji_events,
-                    label: 'Personal Records',
+                  Expanded(
+                    child: _StatsTile(
+                      icon: Icons.local_fire_department,
+                      title: 'ENERGY\nEXPENDITURE',
+                      value: '2,850 kcal/day',
+                    ),
                   ),
-                  const Divider(color: AppColors.outline),
-                  _ListRow(
-                    icon: Icons.refresh,
-                    label: 'Update Workout Program',
-                    onTap: () => context.push('/onboarding/vitals?edit=true'),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: _StatsTile(
+                      icon: Icons.fitness_center,
+                      title: 'TRAINING PLAN',
+                      value: 'Hypertrophy Block\nWk 4 of 8 • 4 days/wk',
+                    ),
                   ),
-                  const Divider(color: AppColors.outline),
-                  const _ListRow(icon: Icons.settings, label: 'Settings'),
-                  const Divider(color: AppColors.outline),
-                  const _ListRow(icon: Icons.support_agent, label: 'Support'),
                 ],
               ),
-            ),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(58),
-                foregroundColor: const Color(0xFFF5AFA8),
-                side: const BorderSide(color: Color(0x55F5AFA8)),
+              const SizedBox(height: 12),
+              KineticCard(
+                child: Column(
+                  children: [
+                    const _ListRow(
+                      icon: Icons.history,
+                      label: 'Workout History',
+                    ),
+                    const Divider(color: AppColors.outline),
+                    const _ListRow(
+                      icon: Icons.emoji_events,
+                      label: 'Personal Records',
+                    ),
+                    const Divider(color: AppColors.outline),
+                    _ListRow(
+                      icon: Icons.refresh,
+                      label: 'Update Workout Program',
+                      onTap: () => context.push('/onboarding/vitals?edit=true'),
+                    ),
+                    const Divider(color: AppColors.outline),
+                    const _ListRow(icon: Icons.settings, label: 'Settings'),
+                    const Divider(color: AppColors.outline),
+                    const _ListRow(icon: Icons.support_agent, label: 'Support'),
+                  ],
+                ),
               ),
-              onPressed: _signingOut ? null : _onLogout,
-              icon: const Icon(Icons.logout),
-              label: Text(_signingOut ? 'LOGGING OUT...' : 'LOG OUT'),
-            ),
-          ],
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(58),
+                  foregroundColor: const Color(0xFFF5AFA8),
+                  side: const BorderSide(color: Color(0x55F5AFA8)),
+                ),
+                onPressed: _signingOut ? null : _onLogout,
+                icon: const Icon(Icons.logout),
+                label: Text(_signingOut ? 'LOGGING OUT...' : 'LOG OUT'),
+              ),
+            ],
+          ),
         ),
       ),
     );

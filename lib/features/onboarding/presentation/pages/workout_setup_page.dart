@@ -49,110 +49,90 @@ class _WorkoutSetupPageState extends State<WorkoutSetupPage> {
     final isEditMode =
         GoRouterState.of(context).uri.queryParameters['edit'] == 'true';
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => context.pop(),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: Text(
-          'PROGRESSIVE OVERLOAD',
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            fontStyle: FontStyle.italic,
-            color: AppColors.primary,
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => context.pop(),
+            icon: const Icon(Icons.arrow_back),
           ),
+          title: Text(
+            'PROGRESSIVE OVERLOAD',
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontStyle: FontStyle.italic,
+              color: AppColors.primary,
+            ),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _stepHeader(context, step: 3),
-              const SizedBox(height: 18),
-              Text(
-                'Workout Setup',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'How would you like to train?',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(color: AppColors.textMuted),
-              ),
-              const SizedBox(height: 20),
-              Expanded(
-                child: Column(
-                  children: [
-                    _OptionCard(
-                      selected: _selectedSetup == 'build_my_own',
-                      onTap: () {
-                        setState(() => _selectedSetup = 'build_my_own');
-                      },
-                      icon: Icons.edit_note,
-                      title: 'Build My Own',
-                      subtitle:
-                          'Select exercises manually and create your custom routine.',
-                    ),
-                    const SizedBox(height: 12),
-                    _OptionCard(
-                      selected: _selectedSetup == 'ai_smart_routine',
-                      onTap: () {
-                        setState(() => _selectedSetup = 'ai_smart_routine');
-                      },
-                      icon: Icons.psychology,
-                      title: 'AI Smart Routine',
-                      subtitle:
-                          'Let our AI suggest the best program based on your equipment and frequency.',
-                    ),
-                    const SizedBox(height: 12),
-                    _OptionCard(
-                      selected: _selectedSetup == 'explore_templates',
-                      onTap: () {
-                        setState(() => _selectedSetup = 'explore_templates');
-                      },
-                      icon: Icons.library_books,
-                      title: 'Explore Templates',
-                      subtitle: 'Choose from professional pre-made programs.',
-                    ),
-                  ],
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const OnboardingStepHeader(step: 3),
+                const SizedBox(height: 18),
+                Text(
+                  'Workout Setup',
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
-              ),
-              NeonPrimaryButton(
-                label: isEditMode ? 'Next: Select Exercises' : 'Continue',
-                icon: Icons.arrow_forward,
-                onPressed: () => _onContinue(isEditMode),
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  'How would you like to train?',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(color: AppColors.textMuted),
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Column(
+                    children: [
+                      _OptionCard(
+                        selected: _selectedSetup == 'build_my_own',
+                        onTap: () {
+                          setState(() => _selectedSetup = 'build_my_own');
+                        },
+                        icon: Icons.edit_note,
+                        title: 'Build My Own',
+                        subtitle:
+                            'Select exercises manually and create your custom routine.',
+                      ),
+                      const SizedBox(height: 12),
+                      _OptionCard(
+                        selected: _selectedSetup == 'ai_smart_routine',
+                        onTap: () {
+                          setState(() => _selectedSetup = 'ai_smart_routine');
+                        },
+                        icon: Icons.psychology,
+                        title: 'AI Smart Routine',
+                        subtitle:
+                            'Let our AI suggest the best program based on your equipment and frequency.',
+                      ),
+                      const SizedBox(height: 12),
+                      _OptionCard(
+                        selected: _selectedSetup == 'explore_templates',
+                        onTap: () {
+                          setState(() => _selectedSetup = 'explore_templates');
+                        },
+                        icon: Icons.library_books,
+                        title: 'Explore Templates',
+                        subtitle: 'Choose from professional pre-made programs.',
+                      ),
+                    ],
+                  ),
+                ),
+                NeonPrimaryButton(
+                  label: isEditMode ? 'Next: Select Exercises' : 'Continue',
+                  icon: Icons.arrow_forward,
+                  onPressed: () => _onContinue(isEditMode),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _stepHeader(BuildContext context, {required int step}) {
-    return Row(
-      children: [
-        Text('Step $step of 3', style: Theme.of(context).textTheme.titleMedium),
-        const Spacer(),
-        _progress(active: step >= 1),
-        _progress(active: step >= 2),
-        _progress(active: step >= 3),
-      ],
-    );
-  }
-
-  Widget _progress({bool active = false}) {
-    return Container(
-      margin: const EdgeInsets.only(left: 6),
-      width: 34,
-      height: 4,
-      decoration: BoxDecoration(
-        color: active ? AppColors.primary : AppColors.surfaceHighest,
-        borderRadius: BorderRadius.circular(999),
       ),
     );
   }

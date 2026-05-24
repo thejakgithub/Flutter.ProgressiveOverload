@@ -28,27 +28,50 @@ class WeeklyPlannerOptionsPopupPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Center(
-                      child: Container(width: 50, height: 4, decoration: BoxDecoration(color: AppColors.surfaceHighest, borderRadius: BorderRadius.circular(999))),
+                      child: Container(
+                        width: 50,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceHighest,
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 14),
-                    Text('Workout Options', style: Theme.of(context).textTheme.titleLarge),
+                    Text(
+                      'Workout Options',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                     const SizedBox(height: 2),
-                    Text('Push Day - Monday', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: AppColors.textMuted)),
+                    Text(
+                      'Push Day - Monday',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: AppColors.textMuted,
+                      ),
+                    ),
                     const Divider(height: 24, color: AppColors.outline),
-                    _menuItem(context, Icons.edit, 'Edit Workout'),
-                    _menuItem(context, Icons.copy_all, 'Duplicate'),
-                    _menuItem(context, Icons.share, 'Share'),
-                    _menuItem(context, Icons.delete_outline, 'Clear Day', destructive: true),
+                    const _MenuItem(icon: Icons.edit, label: 'Edit Workout'),
+                    const _MenuItem(icon: Icons.copy_all, label: 'Duplicate'),
+                    const _MenuItem(icon: Icons.share, label: 'Share'),
+                    const _MenuItem(
+                      icon: Icons.delete_outline,
+                      label: 'Clear Day',
+                      destructive: true,
+                    ),
                     const Divider(height: 24, color: AppColors.outline),
                     Center(
                       child: TextButton(
                         onPressed: () {},
                         child: Text(
                           'CANCEL',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(letterSpacing: 2, color: AppColors.textMuted),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                letterSpacing: 2,
+                                color: AppColors.textMuted,
+                              ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -58,8 +81,21 @@ class WeeklyPlannerOptionsPopupPage extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _menuItem(BuildContext context, IconData icon, String label, {bool destructive = false}) {
+class _MenuItem extends StatelessWidget {
+  const _MenuItem({
+    required this.icon,
+    required this.label,
+    this.destructive = false,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool destructive;
+
+  @override
+  Widget build(BuildContext context) {
     final color = destructive ? const Color(0xFFF5AFA8) : AppColors.text;
     final iconColor = destructive ? const Color(0xFFF5AFA8) : AppColors.primary;
     return InkWell(
@@ -71,7 +107,12 @@ class WeeklyPlannerOptionsPopupPage extends StatelessWidget {
           children: [
             Icon(icon, color: iconColor),
             const SizedBox(width: 12),
-            Text(label, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: color)),
+            Text(
+              label,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(color: color),
+            ),
           ],
         ),
       ),

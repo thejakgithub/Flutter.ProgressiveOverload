@@ -65,9 +65,9 @@ class _WeeklyPlannerPageState extends State<WeeklyPlannerPage> {
     }
   }
 
-  void _openTemplatePicker(String templateName) {
+  Future<void> _openTemplatePicker(String templateName) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    showModalBottomSheet<void>(
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.surfaceContainer,
@@ -80,16 +80,19 @@ class _WeeklyPlannerPageState extends State<WeeklyPlannerPage> {
         onConfirm: (updated) => setState(() => _weekPlan.addAll(updated)),
       ),
     );
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  void _openExerciseAdder(String day) {
+  Future<void> _openExerciseAdder(String day) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    context.push('/workout/add', extra: (day, _weekPlan[day]));
+    await context.push('/workout/add', extra: (day, _weekPlan[day]));
+    if (!mounted) return;
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
-  void _openDayPicker(String day) {
+  Future<void> _openDayPicker(String day) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    showModalBottomSheet<void>(
+    await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.surfaceContainer,
@@ -109,6 +112,7 @@ class _WeeklyPlannerPageState extends State<WeeklyPlannerPage> {
         },
       ),
     );
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   String? _getTemplateSubtitle(String? name) {
@@ -119,39 +123,31 @@ class _WeeklyPlannerPageState extends State<WeeklyPlannerPage> {
     return null;
   }
 
-  Widget _loadingOverlay() {
-    return const ColoredBox(
-      color: Colors.black54,
-      child: Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => context.pop(),
-            ),
-            title: Text(
-              'PROGRESSIVE OVERLOAD',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.primary,
-                fontStyle: FontStyle.italic,
+        GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
+              ),
+              title: Text(
+                'PROGRESSIVE OVERLOAD',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColors.primary,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
             ),
-          ),
-          body: SafeArea(
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-              children: [
+            body: SafeArea(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                children: [
                 Text(
                   'Weekly Planner',
                   style: Theme.of(context).textTheme.headlineMedium,
@@ -226,11 +222,12 @@ class _WeeklyPlannerPageState extends State<WeeklyPlannerPage> {
                   icon: Icons.save,
                   onPressed: _isSaving ? null : _savePlanToDatabase,
                 ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
-        if (_isSaving) _loadingOverlay(),
+        if (_isSaving) const AppLoadingOverlay(),
       ],
     );
   }

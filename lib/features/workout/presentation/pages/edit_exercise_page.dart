@@ -8,60 +8,64 @@ class EditExercisePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: TextButton(
-          onPressed: () => context.pop(),
-          child: const Text('Cancel'),
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: TextButton(
+            onPressed: () => context.pop(),
+            child: const Text('Cancel'),
+          ),
+          title: const Text('Edit Exercise'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: FilledButton(
+                style: FilledButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: const Color(0xFF121415),
+                ),
+                onPressed: () => context.pop(),
+                child: const Text('Update'),
+              ),
+            ),
+          ],
         ),
-        title: const Text('Edit Exercise'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: FilledButton(
-              style: FilledButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: const Color(0xFF121415),
-              ),
-              onPressed: () => context.pop(),
-              child: const Text('Update'),
-            ),
-          ),
-        ],
-      ),
-      body: ListView(
-        children: const [
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: Text(
-              'PUSH DAY',
-              style: TextStyle(
-                fontSize: 48,
-                fontWeight: FontWeight.w900,
-                color: AppColors.primary,
+        body: ListView(
+          children: const [
+            Padding(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'PUSH DAY',
+                style: TextStyle(
+                  fontSize: 48,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primary,
+                ),
               ),
             ),
-          ),
-          _ExerciseSection(
-            name: 'Decline Bench Press (Machine)',
-            timer: 'Rest Timer: 3min 0s',
-            initialRows: [
-              ['W', '20', '12'],
-              ['W', '20', '12'],
-              ['1', '40', '12'],
-              ['2', '40', '12'],
-              ['3', '40', '12'],
-            ],
-          ),
-          _ExerciseSection(
-            name: 'Butterfly (Pec Deck)',
-            timer: 'Rest Timer: 2min 0s',
-            initialRows: [
-              ['W', '29', '12'],
-              ['1', '39', '12'],
-            ],
-          ),
-        ],
+            _ExerciseSection(
+              name: 'Decline Bench Press (Machine)',
+              timer: 'Rest Timer: 3min 0s',
+              initialRows: [
+                ['W', '20', '12'],
+                ['W', '20', '12'],
+                ['1', '40', '12'],
+                ['2', '40', '12'],
+                ['3', '40', '12'],
+              ],
+            ),
+            _ExerciseSection(
+              name: 'Butterfly (Pec Deck)',
+              timer: 'Rest Timer: 2min 0s',
+              initialRows: [
+                ['W', '29', '12'],
+                ['1', '39', '12'],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
